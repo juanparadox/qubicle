@@ -79,23 +79,32 @@ class Email extends React.Component {
         // console.log(dateFns);
         let prettyDate = (date) => dateFns.format(date, 'MM/DD/YYYY'),
             determineStatusColor = (val) => {
-                // value < 0 ? 'fontColor-danger' : 'fontColor-success';
                 if(val < 0)
-                    return 'fontColor-danger'
+                    return 'fontColor-success';
                 if(val > 0)
-                    return 'fontColor-success'
-                return 'fontColor-silver'
+                    return 'fontColor-danger';
+
+                return 'fontColor-silver';
             }
 	    return (
 	    	<div className="fontSize-4 padding-5">
                 <h1 className="marginBottom-2">Qubicle Report</h1>
 		    	<label className="display-block textTransform-uppercase">
                     <span className="display-block marginBottom-1">From:</span>
-                    <input type="date" onChange={this.setFrom} defaultValue={this.state.from}  max={ this.state.from }/>
+                    <input
+                        type="date"
+                        onChange={this.setFrom}
+                        defaultValue={this.state.from}
+                        max={ this.state.from }
+                    />
                 </label>
                 <label className="display-block textTransform-uppercase">
                     <span className="display-block marginBottom-1">To:</span>
-		    	    <input type="date" onChange={this.setTo} defaultValue={this.state.to}/>
+		    	    <input
+                        type="date"
+                        onChange={this.setTo}
+                        defaultValue={this.state.to}
+                    />
                 </label>
 				<p className="marginVertical-4 fontSize-6 fontColor-black-30">
                     {
@@ -106,17 +115,17 @@ class Email extends React.Component {
                     { prettyDate(this.state.from) } – { prettyDate(this.state.to) }.
 				</p>
                 <ul className="lineHeight-6">
-					<li className={ determineStatusColor(this.state.blockerDiff) }>
-                        Blockers: { this.state.blocker } ({ this.state.blockerDiff })
+					<li>
+                        Blockers: { this.state.blocker } (<span className={ determineStatusColor(this.state.blockerDiff) }>{ this.state.blockerDiff }</span>)
                     </li>
-					<li className={ determineStatusColor(this.state.blockerDiff) }>
-                        Critical: { this.state.critical } ({ this.state.criticalDiff })
+					<li>
+                        Critical: { this.state.critical } (<span className={ determineStatusColor(this.state.criticalDiff) }>{ this.state.criticalDiff }</span>)
                     </li>
-					<li className={ determineStatusColor(this.state.blockerDiff) }>
-                        Major: { this.state.major } ({ this.state.majorDiff })
+					<li>
+                        Major: { this.state.major } (<span className={ determineStatusColor(this.state.majorDiff) }>{ this.state.majorDiff }</span>)
                     </li>
-					<li className={ determineStatusColor(this.state.blockerDiff) }>
-                        Minor: { this.state.minor } ({ this.state.minorDiff })
+					<li>
+                        Minor: { this.state.minor } (<span className={ determineStatusColor(this.state.minorDiff) }>{ this.state.minorDiff }</span>)
                     </li>
 				</ul>
 	    	</div>
