@@ -4,7 +4,7 @@ import axios from 'axios'
 class Email extends React.Component {
 	constructor(){
         super();
-        this.state = { 
+        this.state = {
         	from: null,
         	to: null,
         	totalDebt: null,
@@ -18,9 +18,9 @@ class Email extends React.Component {
 
     componentWillMount(){
     	// Make a request for a user with a given ID
-		axios.get('http://sonar.corproot.com/api/timemachine/index?resource=com.wyndhamvo.ui:CustomerUI&metrics=critical_violations,blocker_violations,major_violations,minor_violations,sqale_index&fromDateTime=2016-12-13T00:00&toDateTime=2016-12-21T23:59', 
+		axios.get('http://localhost:4000/?resource=com.wyndhamvo.ui:CustomerUI&metrics=critical_violations,blocker_violations,major_violations,minor_violations,sqale_index&fromDateTime=2016-12-13T00:00&toDateTime=2016-12-21T23:59',
 		{
-			withCredentials: true,
+			withCredentials: false,
 			crossDomain: true
 		})
 		  .then(function (response) {
