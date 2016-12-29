@@ -18,7 +18,11 @@ class Email extends React.Component {
         	blocker: null,
         	critical: null,
         	major: null,
-        	minor: null
+        	minor: null,
+            blockerDiff: null,
+        	criticalDiff: null,
+        	majorDiff: null,
+        	minorDiff: null
         };
     }
 
@@ -40,11 +44,15 @@ class Email extends React.Component {
                     totalTo = dataTo.v[0] + dataTo.v[1] + dataTo.v[2] + dataTo.v[3];
 
                 _this.setState({
-                    critical: dataFrom.v[0],
-                    blocker: dataFrom.v[1],
-                    major: dataFrom.v[2],
-                    minor: dataFrom.v[3],
-                    totalDebt: _this.convertMinToDays(dataFrom.v[4]),
+                    critical: dataTo.v[0],
+                    blocker: dataTo.v[1],
+                    major: dataTo.v[2],
+                    minor: dataTo.v[3],
+                    criticalDiff: dataFrom.v[0] - dataTo.v[0],
+                    blockerDiff: dataFrom.v[1] - dataTo.v[1],
+                    majorDiff: dataFrom.v[2] - dataTo.v[2],
+                    minorDiff: dataFrom.v[3] - dataTo.v[3],
+                    totalDebt: _this.convertMinToDays(dataTo.v[4]),
                     totalIssues: (totalFrom - totalTo)
                 });
             })
@@ -55,7 +63,6 @@ class Email extends React.Component {
 
     componentWillMount(){
         this.sendReq();
-    	// Make a request for a user with a given ID
     }
 
     setFrom = (e) => {
@@ -70,25 +77,47 @@ class Email extends React.Component {
 
 	render() {
         // console.log(dateFns);
+        let prettyDate = (date) => dateFns.format(date, 'MM/DD/YYYY'),
+            determineStatusColor = (val) => {
+                // value < 0 ? 'fontColor-danger' : 'fontColor-success';
+                if(val < 0)
+                    return 'fontColor-danger'
+                if(val > 0)
+                    return 'fontColor-success'
+                return 'fontColor-silver'
+            }
 	    return (
-	    	<div className="fontSize-4 paddingHorizontal-5">
+	    	<div className="fontSize-4 padding-5">
+                <h1 className="marginBottom-2">Qubicle Report</h1>
 		    	<label className="display-block textTransform-uppercase">
                     <span className="display-block marginBottom-1">From:</span>
-                    <input type="date" onChange={this.setFrom} defaultValue={this.state.from}/>
+                    <input type="date" onChange={this.setFrom} defaultValue={this.state.from}  max={ this.state.from }/>
                 </label>
                 <label className="display-block textTransform-uppercase">
                     <span className="display-block marginBottom-1">To:</span>
 		    	    <input type="date" onChange={this.setTo} defaultValue={this.state.to}/>
                 </label>
-		    	<h1 className="marginBottom-2">SonarQube Status:</h1>
-				<p className="marginVertical-2 fontSize-6 fontColor-black-20">
-                    Technical debt is at { this.state.totalDebt } (0) days. {this.state.totalIssues} issues caught since { this.state.from }.
+				<p className="marginVertical-4 fontSize-6 fontColor-black-30">
+                    {
+                        this.state.totalIssues > 0
+                        ? <span>{ this.state.totalIssues } issues added between </span>
+                    : <span>{ Math.abs(this.state.totalIssues) } issues removed between </span>
+                    }
+                    { prettyDate(this.state.from) } – { prettyDate(this.state.to) }.
 				</p>
                 <ul className="lineHeight-6">
-					<li>Blockers: {this.state.blocker} (0)</li>
-					<li>Critical: {this.state.critical} (0)</li>
-					<li>Major: {this.state.major} (0)</li>
-					<li>Minor: {this.state.minor} (0)</li>
+					<li className={ determineStatusColor(this.state.blockerDiff) }>
+                        Blockers: { this.state.blocker } ({ this.state.blockerDiff })
+                    </li>
+					<li className={ determineStatusColor(this.state.blockerDiff) }>
+                        Critical: { this.state.critical } ({ this.state.criticalDiff })
+                    </li>
+					<li className={ determineStatusColor(this.state.blockerDiff) }>
+                        Major: { this.state.major } ({ this.state.majorDiff })
+                    </li>
+					<li className={ determineStatusColor(this.state.blockerDiff) }>
+                        Minor: { this.state.minor } ({ this.state.minorDiff })
+                    </li>
 				</ul>
 	    	</div>
 	    )

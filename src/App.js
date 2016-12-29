@@ -11,8 +11,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        Hello
-        <Email test="THIS IS A TEST!"/>
+        <Email/>
       </div>
     );
   }
