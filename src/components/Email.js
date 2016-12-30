@@ -2,6 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import dateFns from 'date-fns';
 
+import ScrollyCal from './ScrollyCal';
+
 // console.log(dateFns);
 
 class Email extends React.Component {
@@ -140,6 +142,12 @@ class Email extends React.Component {
                         </li>
     				</ul>
                 </div>
+                <ScrollyCal
+                    data=''
+                    onDateClick=''
+                    startDate=''
+                    endDate=''
+                />
 	    	</div>
 	    )
 	}
