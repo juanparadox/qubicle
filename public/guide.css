@@ -265,7 +265,7 @@ pre code {
 .marginRight-1, .input--inline label, .marginHorizontal-1 {
   margin-right: 0.85rem; }
 
-.marginBottom-1, input, .marginVertical-1 {
+.marginBottom-1, .marginVertical-1 {
   margin-bottom: 0.85rem; }
 
 .marginBottom-1--important {

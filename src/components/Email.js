@@ -7,12 +7,12 @@ import dateFns from 'date-fns';
 class Email extends React.Component {
 	constructor(){
         super();
-        let format = dateFns.format,
-            today = dateFns.startOfToday(),
-            lastWeek = dateFns.subDays(today, 7);
+        this.format = dateFns.format;
+        this.today = dateFns.startOfToday();
+        this.lastWeek = dateFns.subDays(this.today, 7);
         this.state = {
-        	from: format(lastWeek, 'YYYY-MM-DD'),
-        	to: format(today, 'YYYY-MM-DD'),
+        	from: this.format(this.lastWeek, 'YYYY-MM-DD'),
+        	to: this.format(this.today, 'YYYY-MM-DD'),
         	totalDebt: null,
         	totalIssues: null,
         	blocker: null,
@@ -80,54 +80,61 @@ class Email extends React.Component {
         let prettyDate = (date) => dateFns.format(date, 'MM/DD/YYYY'),
             determineStatusColor = (val) => {
                 if(val < 0)
-                    return 'fontColor-success';
+                    return 'fontColor-success fontFamily-medium';
                 if(val > 0)
-                    return 'fontColor-danger';
+                    return 'fontColor-danger fontFamily-medium';
 
-                return 'fontColor-silver';
+                return 'fontColor-silver fontFamily-medium';
             }
 	    return (
 	    	<div className="fontSize-4 padding-5">
                 <h1 className="marginBottom-2">Qubicle Report</h1>
-		    	<label className="display-block textTransform-uppercase">
-                    <span className="display-block marginBottom-1">From:</span>
-                    <input
-                        type="date"
-                        onChange={this.setFrom}
-                        defaultValue={this.state.from}
-                        max={ this.state.from }
-                    />
-                </label>
-                <label className="display-block textTransform-uppercase">
-                    <span className="display-block marginBottom-1">To:</span>
-		    	    <input
-                        type="date"
-                        onChange={this.setTo}
-                        defaultValue={this.state.to}
-                    />
-                </label>
-				<p className="marginVertical-4 fontSize-6 fontColor-black-30">
-                    {
-                        this.state.totalIssues > 0
-                        ? <span>{ this.state.totalIssues } issues added between </span>
-                    : <span>{ Math.abs(this.state.totalIssues) } issues removed between </span>
-                    }
-                    { prettyDate(this.state.from) } – { prettyDate(this.state.to) }.
-				</p>
-                <ul className="lineHeight-6">
-					<li>
-                        Blockers: { this.state.blocker } (<span className={ determineStatusColor(this.state.blockerDiff) }>{ this.state.blockerDiff }</span>)
-                    </li>
-					<li>
-                        Critical: { this.state.critical } (<span className={ determineStatusColor(this.state.criticalDiff) }>{ this.state.criticalDiff }</span>)
-                    </li>
-					<li>
-                        Major: { this.state.major } (<span className={ determineStatusColor(this.state.majorDiff) }>{ this.state.majorDiff }</span>)
-                    </li>
-					<li>
-                        Minor: { this.state.minor } (<span className={ determineStatusColor(this.state.minorDiff) }>{ this.state.minorDiff }</span>)
-                    </li>
-				</ul>
+                <div className="grid marginBottom-2">
+    		    	<label className="display-block textTransform-uppercase width-half paddingRight-1">
+                        <span className="display-block marginBottom-1">From:</span>
+                        <input
+                            type="date"
+                            onChange={this.setFrom}
+                            defaultValue={this.state.from}
+                            max={ this.state.to }
+                            min='2016-03-09'
+                        />
+                    </label>
+                    <label className="display-block textTransform-uppercase width-half paddingLeft-1">
+                        <span className="display-block marginBottom-1">To:</span>
+    		    	    <input
+                            type="date"
+                            onChange={this.setTo}
+                            defaultValue={this.state.to}
+                            max={ this.format(this.today, 'YYYY-MM-DD') }
+                            min='2016-03-09'
+                        />
+                    </label>
+                </div>
+                <div className="padding-4 borderWidth-1 borderColor-white-20 bgColor-white-5 borderRadius-1">
+    				<p className="marginBottom-2 fontSize-5 fontColor-black-30">
+                        {
+                            this.state.totalIssues > 0
+                            ? <span>{ this.state.totalIssues } issues added between </span>
+                        : <span>{ Math.abs(this.state.totalIssues) } issues removed between </span>
+                        }
+                        { prettyDate(this.state.from) } – { prettyDate(this.state.to) }.
+    				</p>
+                    <ul className="lineHeight-6">
+    					<li>
+                            Blockers: { this.state.blocker } (<strong className={ determineStatusColor(this.state.blockerDiff) }>{ this.state.blockerDiff }</strong>)
+                        </li>
+    					<li>
+                            Critical: { this.state.critical } (<strong className={ determineStatusColor(this.state.criticalDiff) }>{ this.state.criticalDiff }</strong>)
+                        </li>
+    					<li>
+                            Major: { this.state.major } (<strong className={ determineStatusColor(this.state.majorDiff) }>{ this.state.majorDiff }</strong>)
+                        </li>
+    					<li>
+                            Minor: { this.state.minor } (<strong className={ determineStatusColor(this.state.minorDiff) }>{ this.state.minorDiff }</strong>)
+                        </li>
+    				</ul>
+                </div>
 	    	</div>
 	    )
 	}
