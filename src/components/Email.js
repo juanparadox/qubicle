@@ -31,11 +31,10 @@ class Email extends React.Component {
     sendReq = () => {
         const _this = this;
         axios.get(
-                `http://localhost:4000/?resource=com.wyndhamvo.ui:CustomerUI&metrics=critical_violations,blocker_violations,major_violations,minor_violations,sqale_index&fromDateTime=${_this.state.from}T00:00&toDateTime=${_this.state.to}T23:59`,
+                `http://localhost:4000/?resource=com.wyndhamvo.ui:CustomerUI&metrics=critical_violations,blocker_violations,major_violations,minor_violations,sqale_index,duplicated_lines&fromDateTime=${_this.state.from}T00:00&toDateTime=${_this.state.to}T23:59`,
                 { withCredentials: false, crossDomain: true }
             )
             .then(function (response) {
-                // console.log("AXIOS RESPONSE: ", response);
                 let data = response.data[0].cells,
                     lastCell = data.length - 1,
                     dataFrom = data[0],
@@ -48,12 +47,13 @@ class Email extends React.Component {
                     blocker: dataTo.v[1],
                     major: dataTo.v[2],
                     minor: dataTo.v[3],
-                    criticalDiff: dataFrom.v[0] - dataTo.v[0],
-                    blockerDiff: dataFrom.v[1] - dataTo.v[1],
-                    majorDiff: dataFrom.v[2] - dataTo.v[2],
-                    minorDiff: dataFrom.v[3] - dataTo.v[3],
-                    totalDebt: _this.convertMinToDays(dataTo.v[4]),
-                    totalIssues: (totalFrom - totalTo)
+                    criticalDiff: dataTo.v[0] - dataFrom.v[0],
+                    blockerDiff: dataTo.v[1] - dataFrom.v[1],
+                    majorDiff: dataTo.v[2] - dataFrom.v[2],
+                    minorDiff: dataTo.v[3] - dataFrom.v[3],
+                    totalDebt: _this.convertMinToDays(dataFrom.v[4]),
+                    totalIssues: (totalTo - totalFrom),
+                    duplicationsDiff: (dataTo.v[5] - dataFrom.v[5])
                 });
             })
             .catch(function (error) {
@@ -112,13 +112,18 @@ class Email extends React.Component {
                     </label>
                 </div>
                 <div className="padding-4 borderWidth-1 borderColor-white-20 bgColor-white-5 borderRadius-1">
-    				<p className="marginBottom-2 fontSize-5 fontColor-black-30">
+                    <p>{ prettyDate(this.state.from) } – { prettyDate(this.state.to) }</p>
+    				<p className="marginVertical-2 fontSize-5 fontColor-black-30">
                         {
                             this.state.totalIssues > 0
-                            ? <span>{ this.state.totalIssues } issues added between </span>
-                        : <span>{ Math.abs(this.state.totalIssues) } issues removed between </span>
+                            ? <span>{ this.state.totalIssues } issues added. </span>
+                            : <span>{ Math.abs(this.state.totalIssues) } issues removed. </span>
                         }
-                        { prettyDate(this.state.from) } – { prettyDate(this.state.to) }.
+                        {
+                            this.state.duplicationsDiff > 0
+                            ? <span>{ this.state.duplicationsDiff } duplicated lines added. </span>
+                            : <span>{ Math.abs(this.state.duplicationsDiff) } duplicated lines removed. </span>
+                        }
     				</p>
                     <ul className="lineHeight-6">
     					<li>
