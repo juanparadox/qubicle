@@ -2,7 +2,7 @@ import React from 'react';
 
 const CalDay = ({ children, onClick }) => (
     <div
-        className="padding-2 borderWidth-1 borderColor-white-10 width-seventh"
+        className="padding-1 borderWidth-1 borderColor-white-10 width-seventh textAlign-right"
         onClick={ onClick }
     >
         { children }

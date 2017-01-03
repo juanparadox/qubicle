@@ -4,10 +4,7 @@ import {
     isEqual,
     startOfWeek,
     startOfMonth,
-    endOfWeek,
-    subWeeks,
     addWeeks,
-    subDays,
     addDays,
     format
 } from 'date-fns';
@@ -16,17 +13,14 @@ import CalDay from './CalDay';
 
 const ScrollyCal = ({ data, onDateClick, startDate, endDate, className }) => {
     let weeks = differenceInCalendarWeeks(startDate, endDate),
-        startOfFirstWeek = startOfWeek(endDate),
-        endOfLastWeek = endOfWeek(startDate);
+        startOfFirstWeek = startOfWeek(endDate);
 
     function drawWeeks(count, fromDate){
         let elements = [],
             i = 0;
         for (i; i < count; i++) {
             let week = addWeeks(fromDate, i),
-                startDay = startOfWeek(week),
-                endDay = endOfWeek(week),
-                day = 0;
+                startDay = startOfWeek(week);
             elements.push(
                 <div className="grid" key={i}>
                     { drawDays(7, startDay) }
@@ -44,10 +38,12 @@ const ScrollyCal = ({ data, onDateClick, startDate, endDate, className }) => {
             elements.push(
                 <CalDay key={i}>
                     {
-                        isEqual(day, startOfMonth(day))
-                        ? format(day, 'MMM D')
-                        : format(day, 'D')
+                        isEqual(day, startOfMonth(day)) &&
+                        <span className="fontColor-white-30 fontFamily-bold">
+                            { format(day, 'MMM ') }
+                        </span>
                     }
+                    { format(day, 'D') }
                 </CalDay>
             )
         }
@@ -60,7 +56,7 @@ const ScrollyCal = ({ data, onDateClick, startDate, endDate, className }) => {
                 <div className="fontSize-1 grid">
                     {
                         ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(
-                            day => (<CalDay>{ day }</CalDay>)
+                            (day, i) => (<CalDay key={i}>{ day }</CalDay>)
                         )
                     }
                 </div>
