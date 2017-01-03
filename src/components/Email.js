@@ -89,64 +89,67 @@ class Email extends React.Component {
                 return 'fontColor-silver fontFamily-medium';
             }
 	    return (
-	    	<div className="fontSize-4 padding-5">
-                <h1 className="marginBottom-2">Qubicle Report</h1>
-                <div className="grid marginBottom-2">
-    		    	<label className="display-block textTransform-uppercase width-half paddingRight-1">
-                        <span className="display-block marginBottom-1">From:</span>
-                        <input
-                            type="date"
-                            onChange={this.setFrom}
-                            defaultValue={this.state.from}
-                            max={ this.state.to }
-                            min='2016-03-09'
-                        />
-                    </label>
-                    <label className="display-block textTransform-uppercase width-half paddingLeft-1">
-                        <span className="display-block marginBottom-1">To:</span>
-    		    	    <input
-                            type="date"
-                            onChange={this.setTo}
-                            defaultValue={this.state.to}
-                            max={ this.format(this.today, 'YYYY-MM-DD') }
-                            min='2016-03-09'
-                        />
-                    </label>
-                </div>
-                <div className="padding-4 borderWidth-1 borderColor-white-20 bgColor-white-5 borderRadius-1">
-                    <p>{ prettyDate(this.state.from) } – { prettyDate(this.state.to) }</p>
-    				<p className="marginVertical-2 fontSize-5 fontColor-black-30">
-                        {
-                            this.state.totalIssues > 0
-                            ? <span>{ this.state.totalIssues } issues added. </span>
-                            : <span>{ Math.abs(this.state.totalIssues) } issues removed. </span>
-                        }
-                        {
-                            this.state.duplicationsDiff > 0
-                            ? <span>{ this.state.duplicationsDiff } duplicated lines added. </span>
-                            : <span>{ Math.abs(this.state.duplicationsDiff) } duplicated lines removed. </span>
-                        }
-    				</p>
-                    <ul className="lineHeight-6">
-    					<li>
-                            Blockers: { this.state.blocker } (<strong className={ determineStatusColor(this.state.blockerDiff) }>{ this.state.blockerDiff }</strong>)
-                        </li>
-    					<li>
-                            Critical: { this.state.critical } (<strong className={ determineStatusColor(this.state.criticalDiff) }>{ this.state.criticalDiff }</strong>)
-                        </li>
-    					<li>
-                            Major: { this.state.major } (<strong className={ determineStatusColor(this.state.majorDiff) }>{ this.state.majorDiff }</strong>)
-                        </li>
-    					<li>
-                            Minor: { this.state.minor } (<strong className={ determineStatusColor(this.state.minorDiff) }>{ this.state.minorDiff }</strong>)
-                        </li>
-    				</ul>
+	    	<div className="fontSize-4 width-whole grid">
+                <div className='width-half padding-5'>
+                    <h1 className="marginBottom-2">Qubicle Report</h1>
+                    <div className="grid marginBottom-2">
+    		    	    <label className="display-block textTransform-uppercase width-half paddingRight-1">
+                            <span className="display-block marginBottom-1">From:</span>
+                            <input
+                                type="date"
+                                onChange={this.setFrom}
+                                defaultValue={this.state.from}
+                                max={ this.state.to }
+                                min='2016-03-09'
+                            />
+                        </label>
+                        <label className="display-block textTransform-uppercase width-half paddingLeft-1">
+                            <span className="display-block marginBottom-1">To:</span>
+        		    	    <input
+                                type="date"
+                                onChange={this.setTo}
+                                defaultValue={this.state.to}
+                                max={ this.format(this.today, 'YYYY-MM-DD') }
+                                min='2016-03-09'
+                            />
+                        </label>
+                    </div>
+                    <div className="padding-4 borderWidth-1 borderColor-white-20 bgColor-white-5 borderRadius-1">
+                        <p>{ prettyDate(this.state.from) } – { prettyDate(this.state.to) }</p>
+        				<p className="marginVertical-2 fontSize-5 fontColor-black-30">
+                            {
+                                this.state.totalIssues > 0
+                                ? <span>{ this.state.totalIssues } issues added. </span>
+                                : <span>{ Math.abs(this.state.totalIssues) } issues removed. </span>
+                            }
+                            {
+                                this.state.duplicationsDiff > 0
+                                ? <span>{ this.state.duplicationsDiff } duplicated lines added. </span>
+                                : <span>{ Math.abs(this.state.duplicationsDiff) } duplicated lines removed. </span>
+                            }
+        				</p>
+                        <ul className="lineHeight-6">
+        					<li>
+                                Blockers: { this.state.blocker } (<strong className={ determineStatusColor(this.state.blockerDiff) }>{ this.state.blockerDiff }</strong>)
+                            </li>
+        					<li>
+                                Critical: { this.state.critical } (<strong className={ determineStatusColor(this.state.criticalDiff) }>{ this.state.criticalDiff }</strong>)
+                            </li>
+        					<li>
+                                Major: { this.state.major } (<strong className={ determineStatusColor(this.state.majorDiff) }>{ this.state.majorDiff }</strong>)
+                            </li>
+        					<li>
+                                Minor: { this.state.minor } (<strong className={ determineStatusColor(this.state.minorDiff) }>{ this.state.minorDiff }</strong>)
+                            </li>
+        				</ul>
+                    </div>
                 </div>
                 <ScrollyCal
                     data=''
                     onDateClick=''
-                    startDate=''
-                    endDate=''
+                    startDate={ this.format(this.today, 'MM/DD/YYYY') }
+                    endDate={ this.format('2016-03-09', 'MM/DD/YYYY') }
+                    className='width-half padding-5'
                 />
 	    	</div>
 	    )
