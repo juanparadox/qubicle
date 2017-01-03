@@ -9,7 +9,7 @@ class Email extends React.Component {
         super();
         this.format = dateFns.format;
         this.today = dateFns.startOfToday();
-        this.response = "";
+        // this.response = "";
         this.state = {
         	from: '2016-03-09',
         	to: this.format(this.today, 'YYYY-MM-DD'),
@@ -30,7 +30,7 @@ class Email extends React.Component {
 
     // Sets color to red(negative), green(positive), or black(no change)
     determineStatusColor = (val) => {
-        console.log(val);
+        // console.log(val);
         if(val < 0)
             return 'fontColor-success fontFamily-medium';
         if(val > 0)
@@ -56,6 +56,16 @@ class Email extends React.Component {
         }
     }
 
+    testReduce = (lastVal, currentVal) => {
+        // console.log('testReduce', lastVal, currentVal);
+        for (var property in currentVal) {
+            if (currentVal.hasOwnProperty(property)) {
+                lastVal[property] = currentVal[property];
+            }
+        }
+        return lastVal;
+    }
+
     // API may return data for the same day multiple times, check this
     removeDuplicateDates = (data, index) => {
         let date = this.format(data.d, 'MM-DD-YYYY'),
@@ -77,8 +87,8 @@ class Email extends React.Component {
         // ]
         let data = {};
         this.response = response;
-        data = response.filter(this.removeDuplicateDates).map(this.buildStructure);
-        console.log(data);
+        data = response.filter(this.removeDuplicateDates).map(this.buildStructure).reduce(this.testReduce);
+        this.setState({ data: data });
     }
 
     sendReq = () => {
@@ -110,34 +120,13 @@ class Email extends React.Component {
     }
 
 	render() {
-        // console.log(dateFns);
         let prettyDate = (date) => dateFns.format(date, 'MM/DD/YYYY');
 	    return (
 	    	<div className="fontSize-4 width-whole grid">
-                <div className='width-half padding-5'>
-                    <h1 className="marginBottom-2">Qubicle Report</h1>
-                    <div className="grid marginBottom-2">
-    		    	    <label className="display-block textTransform-uppercase width-half paddingRight-1">
-                            <span className="display-block marginBottom-1">From:</span>
-                            <input
-                                type="date"
-                                onChange={this.setFrom}
-                                defaultValue={this.state.from}
-                                max={ this.state.to }
-                                min='2016-03-09'
-                            />
-                        </label>
-                        <label className="display-block textTransform-uppercase width-half paddingLeft-1">
-                            <span className="display-block marginBottom-1">To:</span>
-        		    	    <input
-                                type="date"
-                                onChange={this.setTo}
-                                defaultValue={this.state.to}
-                                max={ this.format(this.today, 'YYYY-MM-DD') }
-                                min='2016-03-09'
-                            />
-                        </label>
-                    </div>
+                <div className='width-fourth paddingLeft-5'>
+                    <h1 className="marginBottom-2">
+                        Qubicle
+                    </h1>
                     <div className="padding-4 borderWidth-1 borderColor-white-20 bgColor-white-5 borderRadius-1">
                         <p>{ prettyDate(this.state.from) } – { prettyDate(this.state.to) }</p>
         				<p className="marginVertical-2 fontSize-5 fontColor-black-30">
@@ -169,11 +158,11 @@ class Email extends React.Component {
                     </div>
                 </div>
 	    	    <ScrollyCal
-                    data=''
+                    className='width-three-fourths paddingLeft-5 paddingVertical-6'
+                    data={ this.state.data }
                     onDateClick=''
                     startDate={ this.format(this.today, 'MM/DD/YYYY') }
                     endDate={ this.format('2016-03-09', 'MM/DD/YYYY') }
-                    className='width-half padding-5'
                 />
 	    	</div>
 	    )

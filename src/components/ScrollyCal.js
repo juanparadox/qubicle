@@ -12,7 +12,8 @@ import {
 import CalDay from './CalDay';
 
 const ScrollyCal = ({ data, onDateClick, startDate, endDate, className }) => {
-    let weeks = differenceInCalendarWeeks(startDate, endDate),
+    console.log('ScrollyCal', data);
+    let weeks = differenceInCalendarWeeks(startDate, endDate) + 1,
         startOfFirstWeek = startOfWeek(endDate);
 
     function drawWeeks(count, fromDate){
@@ -36,14 +37,30 @@ const ScrollyCal = ({ data, onDateClick, startDate, endDate, className }) => {
         for (i; i < count; i++) {
             let day = addDays(fromDate, i);
             elements.push(
-                <CalDay key={i}>
+                <CalDay
+                    key={i}
+                    style={
+                        isEqual(day, startOfMonth(day))
+                        ? { backgroundColor: 'rgb(241, 241, 242)'}
+                        : null
+                    }
+                >
                     {
                         isEqual(day, startOfMonth(day)) &&
-                        <span className="fontColor-white-30 fontFamily-bold">
+                        <span className="fontColor-primary fontFamily-medium">
                             { format(day, 'MMM ') }
                         </span>
                     }
                     { format(day, 'D') }
+                    { (data && data[format(day, 'MM-DD-YYYY')] !== undefined) &&
+                        (
+                            <p
+                                className="textAlign-left"
+                                dangerouslySetInnerHTML={ { __html: data[format(day, 'MM-DD-YYYY')]} }
+                            >
+                            </p>
+                        )
+                    }
                 </CalDay>
             )
         }
