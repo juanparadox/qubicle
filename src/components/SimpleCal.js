@@ -11,8 +11,8 @@ import {
 
 import CalDay from './CalDay';
 
-const ScrollyCal = ({ data, onDateClick, startDate, endDate, className }) => {
-    // console.log('ScrollyCal', data);
+const SimpleCal = ({ data, onDateClick, startDate, endDate, className }) => {
+    // console.log('SimpleCal', data);
     let weeks = differenceInCalendarWeeks(startDate, endDate) + 1,
         startOfFirstWeek = startOfWeek(endDate);
 
@@ -94,4 +94,4 @@ const ScrollyCal = ({ data, onDateClick, startDate, endDate, className }) => {
     )
 }
 
-export default ScrollyCal;
+export default SimpleCal;

@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import dateFns from 'date-fns';
 
-import ScrollyCal from './ScrollyCal';
+import SimpleCal from './SimpleCal';
 
 class Email extends React.Component {
 	constructor(){
@@ -39,7 +39,7 @@ class Email extends React.Component {
         return 'fontColor-black-30 fontFamily-medium';
     }
 
-    // Build the JSON structure for the ScrollyCal data props
+    // Build the JSON structure for the SimpleCal data props
     buildStructure = (data, index) => {
         let date = this.format(data.d, 'MM-DD-YYYY'),
             elements = "",
@@ -77,7 +77,7 @@ class Email extends React.Component {
         }
     }
 
-    // Parses the response into an object for the ScrollyCal component
+    // Parses the response into an object for the SimpleCal component
     parseResponse = (response) => {
         // JSON structure
         // data = [{
@@ -161,7 +161,7 @@ class Email extends React.Component {
         				</ul>
                     </div>
                 </div>
-	    	    <ScrollyCal
+	    	    <SimpleCal
                     className='width-three-fourths paddingLeft-5 paddingVertical-6'
                     data={ this.state.data }
                     onDateClick={ this.handleDateClick }
