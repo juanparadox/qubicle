@@ -2516,4 +2516,8 @@ fieldset:disabled input {
   pointer-events: none;
 }
 
+strong {
+  font-family: Gotham-Bold;
+}
+
 /*# sourceMappingURL=guide.css.map */
