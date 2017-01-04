@@ -2,12 +2,14 @@ import React from 'react';
 import axios from 'axios';
 import dateFns from 'date-fns';
 
+import ScrollyCal from './ScrollyCal';
+
 class Email extends React.Component {
 	constructor(){
         super();
         this.format = dateFns.format;
         this.today = dateFns.startOfToday();
-        this.response = "";
+        // this.response = "";
         this.state = {
         	from: '2016-03-09',
         	to: this.format(this.today, 'YYYY-MM-DD'),
@@ -28,7 +30,7 @@ class Email extends React.Component {
 
     // Sets color to red(negative), green(positive), or black(no change)
     determineStatusColor = (val) => {
-        console.log(val);
+        // console.log(val);
         if(val < 0)
             return 'fontColor-success fontFamily-medium';
         if(val > 0)
@@ -46,12 +48,22 @@ class Email extends React.Component {
             issuesYesterday = priorIndex.v[0] + priorIndex.v[1] + priorIndex.v[2] + priorIndex.v[3],
             issuesDifference = issuesThisDay - issuesYesterday;
         // Set html
-        elements = "<strong class=" + this.determineStatusColor(issuesDifference) + ">" + 
+        elements = "<strong class=" + this.determineStatusColor(issuesDifference) + ">" +
                 issuesThisDay.toLocaleString() +
             "</strong>";
         return {
             [date]: elements
         }
+    }
+
+    testReduce = (lastVal, currentVal) => {
+        // console.log('testReduce', lastVal, currentVal);
+        for (var property in currentVal) {
+            if (currentVal.hasOwnProperty(property)) {
+                lastVal[property] = currentVal[property];
+            }
+        }
+        return lastVal;
     }
 
     // API may return data for the same day multiple times, check this
@@ -73,9 +85,10 @@ class Email extends React.Component {
         //      },
         //      ...
         // ]
-        let data = {}
+        let data = {};
         this.response = response;
-        data = response.filter(this.removeDuplicateDates).map(this.buildStructure);
+        data = response.filter(this.removeDuplicateDates).map(this.buildStructure).reduce(this.testReduce);
+        this.setState({ data: data });
     }
 
     sendReq = () => {
@@ -107,62 +120,50 @@ class Email extends React.Component {
     }
 
 	render() {
-        // console.log(dateFns);
         let prettyDate = (date) => dateFns.format(date, 'MM/DD/YYYY');
 	    return (
-	    	<div className="fontSize-4 padding-5">
-                <h1 className="marginBottom-2">Qubicle Report</h1>
-                <div className="grid marginBottom-2">
-    		    	<label className="display-block textTransform-uppercase width-half paddingRight-1">
-                        <span className="display-block marginBottom-1">From:</span>
-                        <input
-                            type="date"
-                            onChange={this.setFrom}
-                            defaultValue={this.state.from}
-                            max={ this.state.to }
-                            min='2016-03-09'
-                        />
-                    </label>
-                    <label className="display-block textTransform-uppercase width-half paddingLeft-1">
-                        <span className="display-block marginBottom-1">To:</span>
-    		    	    <input
-                            type="date"
-                            onChange={this.setTo}
-                            defaultValue={this.state.to}
-                            max={ this.format(this.today, 'YYYY-MM-DD') }
-                            min='2016-03-09'
-                        />
-                    </label>
+	    	<div className="fontSize-4 width-whole grid">
+                <div className='width-fourth paddingLeft-5'>
+                    <h1 className="marginBottom-2">
+                        Qubicle
+                    </h1>
+                    <div className="padding-4 borderWidth-1 borderColor-white-20 bgColor-white-5 borderRadius-1">
+                        <p>{ prettyDate(this.state.from) } – { prettyDate(this.state.to) }</p>
+        				<p className="marginVertical-2 fontSize-5 fontColor-black-30">
+                            {
+                                this.state.totalIssues > 0
+                                ? <span>{ this.state.totalIssues } issues added. </span>
+                                : <span>{ Math.abs(this.state.totalIssues) } issues removed. </span>
+                            }
+                            {
+                                this.state.duplicationsDiff > 0
+                                ? <span>{ this.state.duplicationsDiff } duplicated lines added. </span>
+                                : <span>{ Math.abs(this.state.duplicationsDiff) } duplicated lines removed. </span>
+                            }
+        				</p>
+                        <ul className="lineHeight-6">
+        					<li>
+                                Blockers: { this.state.blocker } (<strong className={ this.determineStatusColor(this.state.blockerDiff) }>{ this.state.blockerDiff }</strong>)
+                            </li>
+        					<li>
+                                Critical: { this.state.critical } (<strong className={ this.determineStatusColor(this.state.criticalDiff) }>{ this.state.criticalDiff }</strong>)
+                            </li>
+        					<li>
+                                Major: { this.state.major } (<strong className={ this.determineStatusColor(this.state.majorDiff) }>{ this.state.majorDiff }</strong>)
+                            </li>
+        					<li>
+                                Minor: { this.state.minor } (<strong className={ this.determineStatusColor(this.state.minorDiff) }>{ this.state.minorDiff }</strong>)
+                            </li>
+        				</ul>
+                    </div>
                 </div>
-                <div className="padding-4 borderWidth-1 borderColor-white-20 bgColor-white-5 borderRadius-1">
-                    <p>{ prettyDate(this.state.from) } – { prettyDate(this.state.to) }</p>
-    				<p className="marginVertical-2 fontSize-5 fontColor-black-30">
-                        {
-                            this.state.totalIssues > 0
-                            ? <span>{ this.state.totalIssues } issues added. </span>
-                            : <span>{ Math.abs(this.state.totalIssues) } issues removed. </span>
-                        }
-                        {
-                            this.state.duplicationsDiff > 0
-                            ? <span>{ this.state.duplicationsDiff } duplicated lines added. </span>
-                            : <span>{ Math.abs(this.state.duplicationsDiff) } duplicated lines removed. </span>
-                        }
-    				</p>
-                    <ul className="lineHeight-6">
-    					<li>
-                            Blockers: { this.state.blocker } (<strong className={ this.determineStatusColor(this.state.blockerDiff) }>{ this.state.blockerDiff }</strong>)
-                        </li>
-    					<li>
-                            Critical: { this.state.critical } (<strong className={ this.determineStatusColor(this.state.criticalDiff) }>{ this.state.criticalDiff }</strong>)
-                        </li>
-    					<li>
-                            Major: { this.state.major } (<strong className={ this.determineStatusColor(this.state.majorDiff) }>{ this.state.majorDiff }</strong>)
-                        </li>
-    					<li>
-                            Minor: { this.state.minor } (<strong className={ this.determineStatusColor(this.state.minorDiff) }>{ this.state.minorDiff }</strong>)
-                        </li>
-    				</ul>
-                </div>
+	    	    <ScrollyCal
+                    className='width-three-fourths paddingLeft-5 paddingVertical-6'
+                    data={ this.state.data }
+                    onDateClick=''
+                    startDate={ this.format(this.today, 'MM/DD/YYYY') }
+                    endDate={ this.format('2016-03-09', 'MM/DD/YYYY') }
+                />
 	    	</div>
 	    )
 	}
