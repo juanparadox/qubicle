@@ -1706,6 +1706,9 @@ pre code {
 .width-eigth {
   width: 12.5%; }
 
+  .width-seventh {
+    width: 14.28%; }
+
 .maxWidth-eigth {
   max-width: 12.5%; }
 
@@ -2268,7 +2271,7 @@ pre code {
 .display-block--important {
   display: block !important; }
 
-.display-flex, body, .grid, .input--inline {
+.display-flex, .grid, .input--inline {
   display: flex; }
 
 .display-flex--important {
