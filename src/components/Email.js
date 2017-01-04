@@ -3,6 +3,7 @@ import axios from 'axios';
 import dateFns from 'date-fns';
 
 import ScrollyCal from './ScrollyCal';
+import Summary from './Summary';
 
 class Email extends React.Component {
 	constructor(){
@@ -15,10 +16,10 @@ class Email extends React.Component {
         	to: this.format(this.today, 'YYYY-MM-DD'),
         	totalDebt: null,
         	totalIssues: null,
-        	blocker: null,
-        	critical: null,
-        	major: null,
-        	minor: null,
+        	blocker: 20,
+        	critical: 10,
+        	major: 900,
+        	minor: 9000,
             blockerDiff: null,
         	criticalDiff: null,
         	majorDiff: null,
@@ -40,10 +41,10 @@ class Email extends React.Component {
     }
 
     // Build the JSON structure for the ScrollyCal data props
-    buildStructure = (data, index) => {
+    buildStructure = (data, index, arr) => {
         let date = this.format(data.d, 'MM-DD-YYYY'),
             elements = "",
-            priorIndex = index !== 0 ? this.response[index - 1] : this.response[0],
+            priorIndex = index !== 0 ? arr[index - 1] : arr[0],
             issuesThisDay = data.v[0] + data.v[1] + data.v[2] + data.v[3],
             issuesYesterday = priorIndex.v[0] + priorIndex.v[1] + priorIndex.v[2] + priorIndex.v[3],
             issuesDifference = issuesThisDay - issuesYesterday;
@@ -56,8 +57,7 @@ class Email extends React.Component {
         }
     }
 
-    testReduce = (lastVal, currentVal) => {
-        // console.log('testReduce', lastVal, currentVal);
+    reduceData = (lastVal, currentVal) => {
         for (var property in currentVal) {
             if (currentVal.hasOwnProperty(property)) {
                 lastVal[property] = currentVal[property];
@@ -67,14 +67,42 @@ class Email extends React.Component {
     }
 
     // API may return data for the same day multiple times, check this
-    removeDuplicateDates = (data, index) => {
+    removeDuplicateDates = (data, index, arr) => {
         let date = this.format(data.d, 'MM-DD-YYYY'),
-            priorIndex = index !== 0 ? this.response[index - 1] : this.response[0],
+            priorIndex = index !== 0 ? arr[index - 1] : arr[0],
             priorDate = this.format(priorIndex.d, 'MM-DD-YYYY');
         // Check for date duplicate
-        if(date !== priorDate){
+        if(date !== priorDate || index === 0){
             return true;
         }
+    }
+
+    // Finds closest date if today does not have any data to show a 
+    // default view
+    findClosestDate = (today) => {
+
+    }
+
+    //TODO: Finish depending on new JSON structure
+    // Gets issue counts
+    setIssueCounts = (data) => {
+        let todaysData = data[this.state.to];
+        //console.log("HHH");
+        console.log(this.state.to);
+        if(data){
+            if(todaysData){
+                this.setState({
+                    blocker: todaysData,
+                    critical: todaysData,
+                    major: todaysData,
+                    minor: todaysData
+                })
+            } else {
+                this.findClosestDate(this.state.to)
+            }
+        }
+        // console.log(data);
+        // console.log(data[this.state.to]);
     }
 
     // Parses the response into an object for the ScrollyCal component
@@ -86,8 +114,8 @@ class Email extends React.Component {
         //      ...
         // ]
         let data = {};
-        this.response = response;
-        data = response.filter(this.removeDuplicateDates).map(this.buildStructure).reduce(this.testReduce);
+        data = response.filter(this.removeDuplicateDates).map(this.buildStructure).reduce(this.reduceData);
+        // this.setState({ data: data }, () => this.setIssueCounts(this.state.data));
         this.setState({ data: data });
     }
 
@@ -124,45 +152,23 @@ class Email extends React.Component {
     }
 
 	render() {
-        let prettyDate = (date) => dateFns.format(date, 'MM/DD/YYYY');
 	    return (
 	    	<div className="fontSize-4 width-whole grid">
-                <div className='width-fourth paddingLeft-5'>
-                    <h1 className="marginBottom-2">
-                        Qubicle
-                    </h1>
-                    <div className="padding-4 borderWidth-1 borderColor-white-20 bgColor-white-5 borderRadius-1">
-                        <p>{ prettyDate(this.state.from) } – { prettyDate(this.state.to) }</p>
-        				<p className="marginVertical-2 fontSize-5 fontColor-black-30">
-                            {
-                                this.state.totalIssues > 0
-                                ? <span>{ this.state.totalIssues } issues added. </span>
-                                : <span>{ Math.abs(this.state.totalIssues) } issues removed. </span>
-                            }
-                            {
-                                this.state.duplicationsDiff > 0
-                                ? <span>{ this.state.duplicationsDiff } duplicated lines added. </span>
-                                : <span>{ Math.abs(this.state.duplicationsDiff) } duplicated lines removed. </span>
-                            }
-        				</p>
-                        <ul className="lineHeight-6">
-        					<li>
-                                Blockers: { this.state.blocker } (<strong className={ this.determineStatusColor(this.state.blockerDiff) }>{ this.state.blockerDiff }</strong>)
-                            </li>
-        					<li>
-                                Critical: { this.state.critical } (<strong className={ this.determineStatusColor(this.state.criticalDiff) }>{ this.state.criticalDiff }</strong>)
-                            </li>
-        					<li>
-                                Major: { this.state.major } (<strong className={ this.determineStatusColor(this.state.majorDiff) }>{ this.state.majorDiff }</strong>)
-                            </li>
-        					<li>
-                                Minor: { this.state.minor } (<strong className={ this.determineStatusColor(this.state.minorDiff) }>{ this.state.minorDiff }</strong>)
-                            </li>
-        				</ul>
-                    </div>
-                </div>
+                <Summary
+                    from={ this.state.from }
+                    to={ this.state.to }
+                    totalIssues={ this.state.totalIssues }
+                    blocker={ this.state.blocker }
+                    blockerDiff={ this.state.blockerDiff }
+                    critical={ this.state.critical }
+                    criticalDiff={ this.state.criticalDiff }
+                    major={ this.state.major }
+                    majorDiff={ this.state.majorDiff }
+                    minor={ this.state.minor }
+                    minorDiff={ this.state.minorDiff }
+                />
 	    	    <ScrollyCal
-                    className='width-three-fourths paddingLeft-5 paddingVertical-6'
+                    className='width-three-fourths paddingLeft-5 paddingVertical-6 height-100vh overflowY-scroll'
                     data={ this.state.data }
                     onDateClick={ this.handleDateClick }
                     startDate={ this.format(this.today, 'MM/DD/YYYY') }
