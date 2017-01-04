@@ -12,7 +12,7 @@ import {
 import CalDay from './CalDay';
 
 const ScrollyCal = ({ data, onDateClick, startDate, endDate, className }) => {
-    console.log('ScrollyCal', data);
+    // console.log('ScrollyCal', data);
     let weeks = differenceInCalendarWeeks(startDate, endDate) + 1,
         startOfFirstWeek = startOfWeek(endDate);
 
@@ -35,31 +35,40 @@ const ScrollyCal = ({ data, onDateClick, startDate, endDate, className }) => {
         let elements = [],
             i = 0;
         for (i; i < count; i++) {
-            let day = addDays(fromDate, i);
+            let day = addDays(fromDate, i),
+                formattedDay = format(day, 'MM-DD-YYYY'),
+                dayIsStartOfMonth = isEqual(day, startOfMonth(day)),
+                dayIsSelected = isEqual(day, startDate) || isEqual(day, endDate),
+                classes = '';
+
+            if(dayIsSelected){
+                classes += 'bgColor-ui-light borderColor-ui-dark';
+            }
+            else if (dayIsStartOfMonth) {
+                classes += 'bgColor-white-10';
+            }
+
             elements.push(
                 <CalDay
                     key={i}
-                    style={
-                        isEqual(day, startOfMonth(day))
-                        ? { backgroundColor: 'rgb(241, 241, 242)'}
-                        : null
-                    }
+                    className={classes}
+                    onClick={ onDateClick.bind(this, formattedDay) }
                 >
-                    {
-                        isEqual(day, startOfMonth(day)) &&
+                    {// if start of the month, add month (MMM format, ex: 'Dec')
+                        dayIsStartOfMonth &&
                         <span className="fontColor-primary fontFamily-medium">
                             { format(day, 'MMM ') }
                         </span>
                     }
-                    { format(day, 'D') }
-                    { (data && data[format(day, 'MM-DD-YYYY')] !== undefined) &&
-                        (
-                            <p
-                                className="textAlign-left"
-                                dangerouslySetInnerHTML={ { __html: data[format(day, 'MM-DD-YYYY')]} }
-                            >
-                            </p>
-                        )
+                    {// add the day
+                        format(day, 'D')
+                    }
+                    {// if we have data for this date...
+                        (data && data[formattedDay] !== undefined)
+                        // insert data
+                        ? <p dangerouslySetInnerHTML={ { __html: data[formattedDay]} }></p>
+                        // insert placeholder
+                        : <p className="fontColor-white-30">–</p>
                     }
                 </CalDay>
             )

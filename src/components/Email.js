@@ -137,14 +137,18 @@ class Email extends React.Component {
         this.sendReq();
     }
 
-    setFrom = (e) => {
-    	this.setState({from: e.target.value});
-        this.sendReq();
-    }
+    // setFrom = (e) => {
+    // 	this.setState({from: e.target.value});
+    //     this.sendReq();
+    // }
+    //
+    // setTo = (e) => {
+    // 	this.setState({to: e.target.value});
+    //     this.sendReq();
+    // }
 
-    setTo = (e) => {
-    	this.setState({to: e.target.value});
-        this.sendReq();
+    handleDateClick = (event) => {
+        console.log('handleDateClick', event);
     }
 
 	render() {
@@ -166,7 +170,7 @@ class Email extends React.Component {
 	    	    <ScrollyCal
                     className='width-three-fourths paddingLeft-5 paddingVertical-6 height-100vh overflowY-scroll'
                     data={ this.state.data }
-                    onDateClick=''
+                    onDateClick={ this.handleDateClick }
                     startDate={ this.format(this.today, 'MM/DD/YYYY') }
                     endDate={ this.format('2016-03-09', 'MM/DD/YYYY') }
                 />
