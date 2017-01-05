@@ -14,12 +14,14 @@ class Email extends React.Component {
         this.state = {
         	from: '2016-03-09',
         	to: this.format(this.today, 'YYYY-MM-DD'),
+            firstDate: null,
+            secondDate: null,
         	totalDebt: null,
         	totalIssues: null,
-        	blocker: 20,
-        	critical: 10,
-        	major: 900,
-        	minor: 9000,
+        	blocker: null,
+        	critical: null,
+        	major: null,
+        	minor: null,
             blockerDiff: null,
         	criticalDiff: null,
         	majorDiff: null,
@@ -31,7 +33,6 @@ class Email extends React.Component {
 
     // Sets color to red(negative), green(positive), or black(no change)
     determineStatusColor = (val) => {
-        // console.log(val);
         if(val < 0)
             return 'fontColor-success fontFamily-medium';
         if(val > 0)
@@ -87,7 +88,6 @@ class Email extends React.Component {
     // Gets issue counts
     setIssueCounts = (data) => {
         let todaysData = data[this.state.to];
-        //console.log("HHH");
         console.log(this.state.to);
         if(data){
             if(todaysData){
@@ -101,8 +101,6 @@ class Email extends React.Component {
                 this.findClosestDate(this.state.to)
             }
         }
-        // console.log(data);
-        // console.log(data[this.state.to]);
     }
 
     // Parses the response into an object for the ScrollyCal component
@@ -115,7 +113,6 @@ class Email extends React.Component {
         // ]
         let data = {};
         data = response.filter(this.removeDuplicateDates).map(this.buildStructure).reduce(this.reduceData);
-        // this.setState({ data: data }, () => this.setIssueCounts(this.state.data));
         this.setState({ data: data });
     }
 
@@ -155,8 +152,8 @@ class Email extends React.Component {
 	    return (
 	    	<div className="fontSize-4 width-whole grid">
                 <Summary
-                    from={ this.state.from }
-                    to={ this.state.to }
+                    firstDate={ this.state.firstDate }
+                    secondDate={ this.state.secondDate }
                     totalIssues={ this.state.totalIssues }
                     blocker={ this.state.blocker }
                     blockerDiff={ this.state.blockerDiff }
