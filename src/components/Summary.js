@@ -1,6 +1,5 @@
 import React from 'react';
 import dateFns from 'date-fns';
-import determineStatusColor from './Email';
 
 class Summary extends React.Component {
 
@@ -73,7 +72,7 @@ class Summary extends React.Component {
 	render() {
 	    return (
 	    	<div className='width-fourth height-100vh bgColor-ui-dark fontFamily-book'>
-				<img className="height-13 padding-5" src="../img/qubicle_logo.svg"/>
+				<img className="height-13 padding-5" src="../img/qubicle_logo.svg" role="presentation"/>
 				<p class="bgColor-white-5 padding-5 margin-5">
 					<strong>Date: </strong>
 					{ this.renderDate() }
