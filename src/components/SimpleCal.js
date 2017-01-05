@@ -2,6 +2,8 @@ import React from 'react';
 import {
     differenceInCalendarWeeks,
     isEqual,
+    isFuture,
+    isPast,
     startOfWeek,
     startOfMonth,
     addWeeks,
@@ -11,8 +13,8 @@ import {
 
 import CalDay from './CalDay';
 
-const ScrollyCal = ({ data, onDateClick, startDate, endDate, className }) => {
-    // console.log('ScrollyCal', data);
+const SimpleCal = ({ data, onDateClick, startDate, endDate, className }) => {
+    // console.log('SimpleCal', data);
     let weeks = differenceInCalendarWeeks(startDate, endDate) + 1,
         startOfFirstWeek = startOfWeek(endDate);
 
@@ -36,22 +38,36 @@ const ScrollyCal = ({ data, onDateClick, startDate, endDate, className }) => {
             i = 0;
         for (i; i < count; i++) {
             let day = addDays(fromDate, i),
-                formattedDay = format(day, 'MM-DD-YYYY'),
+                formattedDay = format(day, 'YYYY-MM-DD'),
                 dayIsStartOfMonth = isEqual(day, startOfMonth(day)),
                 dayIsSelected = isEqual(day, startDate) || isEqual(day, endDate),
-                classes = '';
+                dayIsUnavailable = isFuture(day),
+                dayHasData = (data && data[formattedDay]),
+                classes = 'relative padding-1 borderWidth-1 width-seventh height-13 fontFamily-book',
+                cursor = 'cursor-pointer',
+                borderColor = 'borderColor-white-10',
+                bgColor = 'bgColor-white';
 
-            if(dayIsSelected){
-                classes += 'bgColor-ui-light borderColor-ui-dark';
+            // determine cursor, borderColor, and bgColor
+            if(dayIsUnavailable || !dayHasData){
+                bgColor = 'bgColor-white-10';
+                // borderColor = 'borderColor-white';
+                cursor = 'cursor-notAllowed';
             }
-            else if (dayIsStartOfMonth) {
-                classes += 'bgColor-white-10';
+            else if(dayIsStartOfMonth){
+                bgColor = 'bgColor-white-5';
             }
+            else if(dayIsSelected){
+                borderColor = 'borderColor-ui-dark';
+                bgColor = ' bgColor-ui-light';
+            }
+
+            classes = [classes, bgColor, borderColor, cursor].join(' ');
 
             elements.push(
                 <CalDay
                     key={i}
-                    className={classes}
+                    className={ classes }
                     onClick={ onDateClick.bind(this, formattedDay) }
                 >
                     {// if start of the month, add month (MMM format, ex: 'Dec')
@@ -64,11 +80,9 @@ const ScrollyCal = ({ data, onDateClick, startDate, endDate, className }) => {
                         format(day, 'D')
                     }
                     {// if we have data for this date...
-                        (data && data[formattedDay] !== undefined)
+                        (dayHasData !== undefined)
                         // insert data
-                        ? <p dangerouslySetInnerHTML={ { __html: data[formattedDay]} }></p>
-                        // insert placeholder
-                        : <p className="fontColor-white-30">–</p>
+                        && <p dangerouslySetInnerHTML={ { __html: data[formattedDay]} }></p>
                     }
                 </CalDay>
             )
@@ -78,20 +92,11 @@ const ScrollyCal = ({ data, onDateClick, startDate, endDate, className }) => {
 
     return (
         <div className={ className }>
-            <div className="width-whole">
-                <div className="fontSize-1 grid">
-                    {
-                        ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(
-                            (day, i) => (<CalDay key={i}>{ day }</CalDay>)
-                        )
-                    }
-                </div>
-                {
-                    drawWeeks(weeks, startOfFirstWeek)
-                }
-            </div>
+            <div className="width-whole">{
+                drawWeeks(weeks, startOfFirstWeek)
+            }</div>
         </div>
     )
 }
 
-export default ScrollyCal;
+export default SimpleCal;
