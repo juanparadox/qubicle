@@ -1,19 +1,21 @@
 import React from 'react';
 import axios from 'axios';
-import dateFns from 'date-fns';
+import { format, startOfToday, subDays } from 'date-fns';
 
 import SimpleCal from './SimpleCal';
 import Summary from './Summary';
+import CalDay from './CalDay';
 
 class Email extends React.Component {
 	constructor(){
         super();
-        this.format = dateFns.format;
-        this.today = dateFns.startOfToday();
+        this.formatDate = date => format(date, 'YYYY-MM-DD');
+        this.today = startOfToday(),
+        this.lastWeek = subDays(this.today, 7);
         // this.response = "";
         this.state = {
-        	from: '2016-03-09',
-        	to: this.format(this.today, 'YYYY-MM-DD'),
+        	dateA: this.formatDate(this.lastWeek),
+        	dateB: this.formatDate(this.today),
         	totalDebt: null,
         	totalIssues: null,
         	blocker: 20,
@@ -42,7 +44,7 @@ class Email extends React.Component {
 
     // Build the JSON structure for the SimpleCal data props
     buildStructure = (data, index, arr) => {
-        let date = this.format(data.d, 'MM-DD-YYYY'),
+        let date = this.formatDate(data.d, 'MM-DD-YYYY'),
             elements = "",
             priorIndex = index !== 0 ? arr[index - 1] : arr[0],
             issuesThisDay = data.v[0] + data.v[1] + data.v[2] + data.v[3],
@@ -68,9 +70,9 @@ class Email extends React.Component {
 
     // API may return data for the same day multiple times, check this
     removeDuplicateDates = (data, index, arr) => {
-        let date = this.format(data.d, 'MM-DD-YYYY'),
+        let date = this.formatDate(data.d, 'MM-DD-YYYY'),
             priorIndex = index !== 0 ? arr[index - 1] : arr[0],
-            priorDate = this.format(priorIndex.d, 'MM-DD-YYYY');
+            priorDate = this.formatDate(priorIndex.d, 'MM-DD-YYYY');
         // Check for date duplicate
         if(date !== priorDate || index === 0){
             return true;
@@ -105,8 +107,9 @@ class Email extends React.Component {
         // console.log(data[this.state.to]);
     }
 
-    // Parses the response into an object for the ScrollyCal component
+    // Parses the response into an object for the SimpleCal component
     parseResponse = (response) => {
+        console.log('parseResponse');
         // JSON structure
         // data = [{
         //          '12-10-31': '<span>....</span>'
@@ -116,36 +119,26 @@ class Email extends React.Component {
         let data = {};
         data = response.filter(this.removeDuplicateDates).map(this.buildStructure).reduce(this.reduceData);
         // this.setState({ data: data }, () => this.setIssueCounts(this.state.data));
+        console.log(data);
         this.setState({ data: data });
     }
 
     sendReq = () => {
         const _this = this;
-        axios.get(
-                `http://localhost:4000/?resource=com.wyndhamvo.ui:CustomerUI&metrics=critical_violations,blocker_violations,major_violations,minor_violations,sqale_index,duplicated_lines&fromDateTime=${_this.state.from}T00:00&toDateTime=${_this.state.to}T23:59`,
-                { withCredentials: false, crossDomain: true }
-            )
+        const url = `http://localhost:4000/?resource=com.wyndhamvo.ui:CustomerUI&metrics=critical_violations,blocker_violations,major_violations,minor_violations,sqale_index,duplicated_lines&fromDateTime=2016-03-09T00:00&toDateTime=${
+            _this.formatDate(_this.today)
+        }T23:59`
+
+        axios.get(url,{ withCredentials: false, crossDomain: true })
             .then(
-                response => {this.parseResponse(response.data[0].cells)}
+                response => { this.parseResponse(response.data[0].cells) }
             )
-            .catch(function (error) {
-                console.log("AXIOS ERROR: ", error);
-            });
+            .catch(error => { console.error("AXIOS ERROR: ", error) });
     }
 
     componentWillMount(){
         this.sendReq();
     }
-
-    // setFrom = (e) => {
-    // 	this.setState({from: e.target.value});
-    //     this.sendReq();
-    // }
-    //
-    // setTo = (e) => {
-    // 	this.setState({to: e.target.value});
-    //     this.sendReq();
-    // }
 
     handleDateClick = (event) => {
         console.log('handleDateClick', event);
@@ -167,12 +160,27 @@ class Email extends React.Component {
                     minor={ this.state.minor }
                     minorDiff={ this.state.minorDiff }
                 />
+            <div className="position-absolute left-fourth width-three-fourths fontSize-1 bgColor-white-30">
+                    <div className="grid">{
+                        // loop through each day of the week
+                        ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(
+                            (day, i) => (
+                                <CalDay
+                                    key={i}
+                                    className="paddingTop-2 paddingLeft-2 height-8 width-seventh fontFamily-bold fontSize-2 letterSpacing fontColor-white"
+                                >
+                                    { day }
+                                </CalDay>
+                            )
+                        )
+                    }</div>
+                </div>
                 <SimpleCal
-                    className='width-three-fourths paddingLeft-5 paddingVertical-6 height-100vh overflowY-scroll'
+                    className='paddingTop-8 paddingBottom-1 width-three-fourths height-100vh overflowY-scroll'
                     data={ this.state.data }
                     onDateClick={ this.handleDateClick }
-                    startDate={ this.format(this.today, 'MM/DD/YYYY') }
-                    endDate={ this.format('2016-03-09', 'MM/DD/YYYY') }
+                    startDate={ this.formatDate(this.today) }
+                    endDate='2016-03-09'
                 />
 	    	</div>
 	    )
