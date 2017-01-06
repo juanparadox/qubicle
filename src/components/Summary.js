@@ -37,12 +37,13 @@ class Summary extends React.Component {
         : this.prettyDate(this.props.newerDate)
 
 	// Handles whether or not the "issues added" should be shown or just "issues"
-	renderIssueCount = () => this.props.totalIssues > 0 && this.props.newerDate ?
-		(<div>
+	renderIssueCount = () => this.props.totalIssues > 0 && this.props.newerDate
+		? (<p className="marginBottom-2 fontSize-5 fontColor-black">
 			<strong>Issues added: </strong>
 			<span>{ this.props.totalIssues.toLocaleString() }</span>
-		</div>) :
-		(<div><strong>Issues: </strong><span>{ this.props.totalIssues.toLocaleString() }</span></div>)
+		</p>
+		) 
+		: (<div><strong>Issues: </strong><span>{ this.props.totalIssues.toLocaleString() }</span></div>)
 
 	// Renders each issue count and (if applicable) the differences between dates
 	renderIssues = () =>
@@ -50,22 +51,22 @@ class Summary extends React.Component {
 			<li>
                 <strong>Blocker: </strong>
                 { this.props.blocker.toLocaleString() }
-                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.blockerDiff) }>{ this.props.blockerDiff }</strong>}
+                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.blockerDiff) }>({ this.props.blockerDiff.toLocaleString() })</strong>}
             </li>
 			<li>
                 <strong>Critical: </strong>
                 { this.props.critical.toLocaleString() }
-                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.criticalDiff) }>{ this.props.criticalDiff }</strong>}
+                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.criticalDiff) }>({ this.props.criticalDiff.toLocaleString() })</strong>}
             </li>
 			<li>
                 <strong>Major: </strong>
                 { this.props.major.toLocaleString() }
-                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.majorDiff) }>{ this.props.majorDiff }</strong>}
+                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.majorDiff) }>({ this.props.majorDiff.toLocaleString() })</strong>}
             </li>
 			<li>
                 <strong>Minor: </strong>
                 { this.props.minor.toLocaleString() }
-                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.minorDiff) }>{ this.props.minorDiff }</strong>}
+                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.minorDiff) }>({ this.props.minorDiff.toLocaleString() })</strong>}
             </li>
 		</ul>
 
@@ -73,15 +74,13 @@ class Summary extends React.Component {
 	    return (
 	    	<div className='width-fourth height-100vh bgColor-ui-dark fontFamily-book'>
 				<img className="height-13 padding-5" src="../img/qubicle_logo.svg" role="presentation"/>
-				<p class="bgColor-white-5 padding-5 margin-5">
-					<strong>Date: </strong>
-					{ this.renderDate() }
-				</p>
 				{this.props.totalIssues &&
-			    	<div id="summary" class="padding-5 bgColor-white-10 marginHorizontal-5" contentEditable>
-						<p className="marginBottom-2 fontSize-5 fontColor-black">
-							{ this.renderIssueCount() }
-						</p>
+			    	<div id="summary" class="padding-5 bgColor-white-10 marginHorizontal-5" contentEditable suppressContentEditableWarning={true}>
+			    		<strong>Date: </strong>
+			    		<span className="marginBottom-2 display-inlineBlock">
+						{ this.renderDate() }
+						</span>
+						{ this.renderIssueCount() }
 						{ this.renderIssues() }
 					</div>
 				}
