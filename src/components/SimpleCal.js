@@ -43,23 +43,23 @@ const SimpleCal = ({ data, onDateClick, startDate, endDate, className }) => {
                 dayIsSelected = isEqual(day, startDate) || isEqual(day, endDate),
                 dayIsUnavailable = isFuture(day),
                 dayHasData = (data && data[formattedDay]),
-                classes = 'relative padding-1 borderWidth-1 width-seventh height-13 fontFamily-book',
+                classes = 'relative padding-1 borderRight-1 borderBottom-1 width-seventh height-13 fontFamily-book',
                 cursor = 'cursor-pointer',
-                borderColor = 'borderColor-white-10',
+                borderColor = 'borderColor-white-20',
                 bgColor = 'bgColor-white';
 
             // determine cursor, borderColor, and bgColor
             if(dayIsUnavailable || !dayHasData){
                 bgColor = 'bgColor-white-10';
-                // borderColor = 'borderColor-white';
+                borderColor = 'borderColor-white-20';
                 cursor = 'cursor-notAllowed';
             }
             else if(dayIsStartOfMonth){
                 bgColor = 'bgColor-white-5';
             }
             else if(dayIsSelected){
-                borderColor = 'borderColor-ui-dark';
-                bgColor = ' bgColor-ui-light';
+                // borderColor = 'borderColor-ui-dark';
+                bgColor = ' bgColor-standard';
             }
 
             classes = [classes, bgColor, borderColor, cursor].join(' ');
@@ -72,7 +72,7 @@ const SimpleCal = ({ data, onDateClick, startDate, endDate, className }) => {
                 >
                     {// if start of the month, add month (MMM format, ex: 'Dec')
                         dayIsStartOfMonth &&
-                        <span className="fontColor-primary fontFamily-medium">
+                        <span className="fontColor-primary fontFamily-medium fontSize-5">
                             { format(day, 'MMM ') }
                         </span>
                     }
