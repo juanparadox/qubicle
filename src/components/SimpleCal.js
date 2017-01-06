@@ -3,7 +3,6 @@ import {
     differenceInCalendarWeeks,
     isEqual,
     isFuture,
-    isPast,
     startOfWeek,
     startOfMonth,
     addWeeks,
@@ -13,9 +12,8 @@ import {
 
 import CalDay from './CalDay';
 
-const SimpleCal = ({ data, onDateClick, startDate, endDate, className }) => {
-    // console.log('SimpleCal', data);
-    let weeks = differenceInCalendarWeeks(startDate, endDate) + 1,
+const SimpleCal = ({ data, onDateClick, startDate, endDate, className, olderDate, newerDate }) => {
+    let weeks = differenceInCalendarWeeks(startDate, endDate) + 1, // +1 to get current week
         startOfFirstWeek = startOfWeek(endDate);
 
     function drawWeeks(count, fromDate){
@@ -38,16 +36,15 @@ const SimpleCal = ({ data, onDateClick, startDate, endDate, className }) => {
             i = 0;
         for (i; i < count; i++) {
             let day = addDays(fromDate, i),
-                formattedDay = format(day, 'YYYY-MM-DD'),
+                formattedDay = format(day, 'MM-DD-YYYY'),
                 dayIsStartOfMonth = isEqual(day, startOfMonth(day)),
-                dayIsSelected = isEqual(day, startDate) || isEqual(day, endDate),
+                dayIsSelected = isEqual(day, olderDate) || isEqual(day, newerDate),
                 dayIsUnavailable = isFuture(day),
                 dayHasData = (data && data[formattedDay]),
                 classes = 'relative padding-1 borderRight-1 borderBottom-1 width-seventh height-13 fontFamily-book',
                 cursor = 'cursor-pointer',
                 borderColor = 'borderColor-white-20',
                 bgColor = 'bgColor-white';
-
             // determine cursor, borderColor, and bgColor
             if(dayIsUnavailable || !dayHasData){
                 bgColor = 'bgColor-white-10';
@@ -58,17 +55,16 @@ const SimpleCal = ({ data, onDateClick, startDate, endDate, className }) => {
                 bgColor = 'bgColor-white-5';
             }
             else if(dayIsSelected){
-                // borderColor = 'borderColor-ui-dark';
-                bgColor = ' bgColor-standard';
+                bgColor = 'bgColor-info';
             }
-
+            // join classes
             classes = [classes, bgColor, borderColor, cursor].join(' ');
-
+            // push CalDay to elements
             elements.push(
                 <CalDay
                     key={i}
                     className={ classes }
-                    onClick={ onDateClick.bind(this, formattedDay) }
+                    onClick={ dayHasData && onDateClick.bind(this, formattedDay) }
                 >
                     {// if start of the month, add month (MMM format, ex: 'Dec')
                         dayIsStartOfMonth &&
@@ -82,7 +78,7 @@ const SimpleCal = ({ data, onDateClick, startDate, endDate, className }) => {
                     {// if we have data for this date...
                         (dayHasData !== undefined)
                         // insert data
-                        && <p dangerouslySetInnerHTML={ { __html: data[formattedDay]} }></p>
+                        && <p>{ data[formattedDay].elements }</p>
                     }
                 </CalDay>
             )
@@ -91,7 +87,7 @@ const SimpleCal = ({ data, onDateClick, startDate, endDate, className }) => {
     }
 
     return (
-        <div className={ className }>
+        <div id="SimpleCal" className={ className }>
             <div className="width-whole">{
                 drawWeeks(weeks, startOfFirstWeek)
             }</div>
