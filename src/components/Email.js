@@ -162,7 +162,7 @@ class Email extends React.Component {
                             (day, i) => (
                                 <CalDay
                                     key={i}
-                                    className="paddingTop-2 paddingLeft-2 height-8 width-seventh fontFamily-bold fontSize-2 letterSpacing fontColor-white"
+                                    className="paddingTop-2 paddingLeft-2 height-8 width-seventh fontFamily-bold fontSize-2 letterSpacing fontColor-white borderColor-white-20 borderRight-1"
                                 >
                                     { day }
                                 </CalDay>

@@ -50,22 +50,22 @@ class Summary extends React.Component {
 			<li>
                 <strong>Blocker: </strong>
                 { this.props.blocker.toLocaleString() }
-                &nbsp;({ this.props.secondDate && (<strong className={ this.determineStatusColor(this.props.blockerDiff) }>{ this.props.blockerDiff }</strong>)})
+                &nbsp;{ this.props.secondDate && <strong className={ this.determineStatusColor(this.props.blockerDiff) }>{ this.props.blockerDiff }</strong>}
             </li>
 			<li>
                 <strong>Critical: </strong>
                 { this.props.critical.toLocaleString() }
-                &nbsp;({ this.props.secondDate && (<strong className={ this.determineStatusColor(this.props.criticalDiff) }>{ this.props.criticalDiff }</strong>)})
+                &nbsp;{ this.props.secondDate && <strong className={ this.determineStatusColor(this.props.criticalDiff) }>{ this.props.criticalDiff }</strong>}
             </li>
 			<li>
                 <strong>Major: </strong>
                 { this.props.major.toLocaleString() }
-                &nbsp;({ this.props.secondDate && (<strong className={ this.determineStatusColor(this.props.majorDiff) }>{ this.props.majorDiff }</strong>)})
+                &nbsp;{ this.props.secondDate && <strong className={ this.determineStatusColor(this.props.majorDiff) }>{ this.props.majorDiff }</strong>}
             </li>
 			<li>
                 <strong>Minor: </strong> 
                 { this.props.minor.toLocaleString() }
-                &nbsp;({ this.props.secondDate && (<strong className={ this.determineStatusColor(this.props.minorDiff) }>{ this.props.minorDiff }</strong>)})
+                &nbsp;{ this.props.secondDate && <strong className={ this.determineStatusColor(this.props.minorDiff) }>{ this.props.minorDiff }</strong>}
             </li>
 		</ul>
 
