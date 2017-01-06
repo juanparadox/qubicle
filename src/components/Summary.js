@@ -9,7 +9,7 @@ class Summary extends React.Component {
 	selectText = () => {
 		let range = document.createRange(),
 			selection;
-	    
+
 	    // Selects text
 	    range.selectNodeContents(document.getElementById('summary'));
 	    selection = window.getSelection();
@@ -32,12 +32,12 @@ class Summary extends React.Component {
     }
 
 	// Handles date rendering in case only one date is passed as props
-	renderDate = () => this.props.firstDate && this.props.secondDate ? 
-		this.prettyDate(this.props.firstDate) + " & " + this.prettyDate(this.props.secondDate) :
-		this.prettyDate(this.props.firstDate)
+	renderDate = () => this.props.olderDate && this.props.newerDate
+        ? this.prettyDate(this.props.olderDate) + " & " + this.prettyDate(this.props.newerDate)
+        : this.prettyDate(this.props.newerDate)
 
 	// Handles whether or not the "issues added" should be shown or just "issues"
-	renderIssueCount = () => this.props.totalIssues > 0 && this.props.secondDate ?
+	renderIssueCount = () => this.props.totalIssues > 0 && this.props.newerDate ?
 		(<div>
 			<strong>Issues added: </strong>
 			<span>{ this.props.totalIssues.toLocaleString() }</span>
@@ -45,27 +45,27 @@ class Summary extends React.Component {
 		(<div><strong>Issues: </strong><span>{ this.props.totalIssues.toLocaleString() }</span></div>)
 
 	// Renders each issue count and (if applicable) the differences between dates
-	renderIssues = () => 
+	renderIssues = () =>
 		<ul className="lineHeight-6">
 			<li>
                 <strong>Blocker: </strong>
                 { this.props.blocker.toLocaleString() }
-                &nbsp;{ this.props.secondDate && <strong className={ this.determineStatusColor(this.props.blockerDiff) }>{ this.props.blockerDiff }</strong>}
+                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.blockerDiff) }>{ this.props.blockerDiff }</strong>}
             </li>
 			<li>
                 <strong>Critical: </strong>
                 { this.props.critical.toLocaleString() }
-                &nbsp;{ this.props.secondDate && <strong className={ this.determineStatusColor(this.props.criticalDiff) }>{ this.props.criticalDiff }</strong>}
+                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.criticalDiff) }>{ this.props.criticalDiff }</strong>}
             </li>
 			<li>
                 <strong>Major: </strong>
                 { this.props.major.toLocaleString() }
-                &nbsp;{ this.props.secondDate && <strong className={ this.determineStatusColor(this.props.majorDiff) }>{ this.props.majorDiff }</strong>}
+                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.majorDiff) }>{ this.props.majorDiff }</strong>}
             </li>
 			<li>
-                <strong>Minor: </strong> 
+                <strong>Minor: </strong>
                 { this.props.minor.toLocaleString() }
-                &nbsp;{ this.props.secondDate && <strong className={ this.determineStatusColor(this.props.minorDiff) }>{ this.props.minorDiff }</strong>}
+                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.minorDiff) }>{ this.props.minorDiff }</strong>}
             </li>
 		</ul>
 
