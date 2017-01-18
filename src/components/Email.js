@@ -58,7 +58,10 @@ class Email extends React.Component {
         return {
             [date]: {
                 elements: (
-                    <strong className={ this.determineStatusColor(issuesDifference) }>
+                    <strong className={
+                            this.determineStatusColor(issuesDifference)
+                            + ' position-absolute bottom-2 right-2'
+                         }>
                         { (issuesThisDay !== null) && issuesThisDay.toLocaleString() }
                     </strong>
                 ),

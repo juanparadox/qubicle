@@ -41,7 +41,7 @@ const SimpleCal = ({ data, onDateClick, startDate, endDate, className, olderDate
                 dayIsSelected = isEqual(day, olderDate) || isEqual(day, newerDate),
                 dayIsUnavailable = isFuture(day),
                 dayHasData = (data && data[formattedDay]),
-                classes = 'relative padding-1 borderRight-1 borderBottom-1 width-seventh height-13 fontFamily-book',
+                classes = 'position-relative padding-1 borderRight-1 borderBottom-1 width-seventh height-13 fontFamily-book',
                 cursor = 'cursor-pointer',
                 borderColor = 'borderColor-white-20',
                 bgColor = 'bgColor-white';
@@ -55,7 +55,7 @@ const SimpleCal = ({ data, onDateClick, startDate, endDate, className, olderDate
                 bgColor = 'bgColor-white-5';
             }
             else if(dayIsSelected){
-                bgColor = 'bgColor-info';
+                bgColor = 'bgColor-black fontColor-white';
             }
             // join classes
             classes = [classes, bgColor, borderColor, cursor].join(' ');
