@@ -43,22 +43,22 @@ const SimpleCal = ({ data, onDateClick, startDate, endDate, className, olderDate
                 dayHasData = (data && data[formattedDay]),
                 classes = 'position-relative padding-1 borderRight-1 borderBottom-1 width-seventh height-13 fontFamily-book',
                 cursor = 'cursor-pointer',
-                borderColor = 'borderColor-white-20',
-                bgColor = 'bgColor-white';
+                border = 'borderColor-white-20',
+                bg = 'bgColor-white';
             // determine cursor, borderColor, and bgColor
             if(dayIsUnavailable || !dayHasData){
-                bgColor = 'bgColor-white-10';
-                borderColor = 'borderColor-white-20';
+                bg = 'bgColor-white-10';
+                border = 'borderColor-white-20';
                 cursor = 'cursor-notAllowed';
             }
             else if(dayIsStartOfMonth){
-                bgColor = 'bgColor-white-5';
+                bg = 'bgColor-white-5';
             }
             else if(dayIsSelected){
-                bgColor = 'bgColor-black fontColor-white';
+                bg = 'bgColor-black fontColor-white';
             }
             // join classes
-            classes = [classes, bgColor, borderColor, cursor].join(' ');
+            classes = [classes, bg, border, cursor].join(' ');
             // push CalDay to elements
             elements.push(
                 <CalDay
