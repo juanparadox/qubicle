@@ -54,12 +54,15 @@ class Email extends React.Component {
             issuesThisDay = data.v[0] + data.v[1] + data.v[2] + data.v[3],
             issuesYesterday = priorIndex.v[0] + priorIndex.v[1] + priorIndex.v[2] + priorIndex.v[3],
             issuesDifference = issuesThisDay - issuesYesterday;
-
+        console.log('issuesThisDay', issuesThisDay === null);
         return {
             [date]: {
                 elements: (
-                    <strong className={ this.determineStatusColor(issuesDifference) }>
-                        { issuesThisDay.toLocaleString() }
+                    <strong className={
+                            this.determineStatusColor(issuesDifference)
+                            + ' position-absolute bottom-2 right-2'
+                         }>
+                        { (issuesThisDay !== null) && issuesThisDay.toLocaleString() }
                     </strong>
                 ),
                 totalIssues: issuesThisDay,

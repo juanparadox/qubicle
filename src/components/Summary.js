@@ -42,31 +42,53 @@ class Summary extends React.Component {
 			<strong>Issues added: </strong>
 			<span>{ this.props.totalIssues.toLocaleString() }</span>
 		</p>
-		) 
+		)
 		: (<div><strong>Issues: </strong><span>{ this.props.totalIssues.toLocaleString() }</span></div>)
+
+    nullCheck = val => (val === null) ? '' : val
 
 	// Renders each issue count and (if applicable) the differences between dates
 	renderIssues = () =>
 		<ul className="lineHeight-6">
 			<li>
                 <strong>Blocker: </strong>
-                { this.props.blocker.toLocaleString() }
-                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.blockerDiff) }>({ this.props.blockerDiff.toLocaleString() })</strong>}
+                { this.nullCheck(this.props.blocker) && this.props.blocker.toLocaleString() }
+                &nbsp;
+                { this.props.olderDate &&
+                    <strong className={ this.determineStatusColor(this.props.blockerDiff) }>
+                        ({ this.nullCheck(this.props.blocker) && this.props.blockerDiff.toLocaleString() })
+                    </strong>
+                }
             </li>
 			<li>
                 <strong>Critical: </strong>
-                { this.props.critical.toLocaleString() }
-                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.criticalDiff) }>({ this.props.criticalDiff.toLocaleString() })</strong>}
+                { this.nullCheck(this.props.critical) && this.props.critical.toLocaleString() }
+                &nbsp;
+                { this.props.olderDate &&
+                    <strong className={ this.determineStatusColor(this.props.criticalDiff) }>
+                        ({ this.nullCheck(this.props.criticalDiff) && this.props.criticalDiff.toLocaleString() })
+                    </strong>
+                }
             </li>
 			<li>
                 <strong>Major: </strong>
-                { this.props.major.toLocaleString() }
-                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.majorDiff) }>({ this.props.majorDiff.toLocaleString() })</strong>}
+                { this.nullCheck(this.props.major) && this.props.major.toLocaleString() }
+                &nbsp;
+                { this.props.olderDate &&
+                    <strong className={ this.determineStatusColor(this.props.majorDiff) }>
+                        ({ this.nullCheck(this.props.majorDiff) && this.props.majorDiff.toLocaleString() })
+                    </strong>
+                }
             </li>
 			<li>
                 <strong>Minor: </strong>
-                { this.props.minor.toLocaleString() }
-                &nbsp;{ this.props.olderDate && <strong className={ this.determineStatusColor(this.props.minorDiff) }>({ this.props.minorDiff.toLocaleString() })</strong>}
+                { this.nullCheck(this.props.minor) && this.props.minor.toLocaleString() }
+                &nbsp;
+                { this.props.olderDate &&
+                    <strong className={ this.determineStatusColor(this.props.minorDiff) }>
+                        ({ this.nullCheck(this.props.minorDiff) && this.props.minorDiff.toLocaleString() })
+                    </strong>
+                }
             </li>
 		</ul>
 
