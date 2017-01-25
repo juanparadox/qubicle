@@ -47,6 +47,23 @@ class Summary extends React.Component {
 
     nullCheck = val => (val === null) ? '' : val
 
+    // Adds a message based on closed or new issues
+    renderMessage = () => {
+    	let total = this.props.blockerDiff + this.props.criticalDiff + this.props.majorDiff + this.props.minorDiff,
+    		message = "Great work, team!";
+    	if(total < -100){
+    		message = "Looks like there were major reductions in issues in the past few weeks. Great work, team!";
+    	} 
+    	if(total > 0){
+    		message = "Looks like there was an addition in issues in the past few weeks.";
+    	}
+    	return (
+    		<div className="marginTop-2">
+    		{message}
+	    	</div>
+    	)
+    }
+
 	// Renders each issue count and (if applicable) the differences between dates
 	renderIssues = () =>
 		<ul className="lineHeight-6">
@@ -98,12 +115,14 @@ class Summary extends React.Component {
 				<img className="height-13 padding-5" src="../img/qubicle_logo.svg" role="presentation"/>
 				{this.props.totalIssues &&
 			    	<div id="summary" class="padding-5 bgColor-white-10 marginHorizontal-5" contentEditable suppressContentEditableWarning={true}>
-			    		<strong>Date: </strong>
+			    		Here are the updates from our code review for the following date(s):
+			    		<strong className="display-block marginTop-2">Date: </strong>
 			    		<span className="marginBottom-2 display-inlineBlock">
 						{ this.renderDate() }
 						</span>
 						{ this.renderIssueCount() }
 						{ this.renderIssues() }
+						{ this.props.olderDate && this.renderMessage() }
 					</div>
 				}
 		        <div class="display-inlineBlock verticalAlign-top paddingLeft-5">
