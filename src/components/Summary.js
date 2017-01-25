@@ -37,31 +37,43 @@ class Summary extends React.Component {
         : this.prettyDate(this.props.newerDate)
 
 	// Handles whether or not the "issues added" should be shown or just "issues"
-	renderIssueCount = () => this.props.totalIssues > 0 && this.props.newerDate
-		? (<p className="marginBottom-2 fontSize-5 fontColor-black">
-			<strong>Issues added: </strong>
-			<span>{ this.props.totalIssues.toLocaleString() }</span>
-		</p>
+	renderIssueCount = () => {
+        let text = (this.props.totalIssues > 0 && this.props.newerDate) ? 'Issues Added' : 'Issues'
+		return (
+            <p className="marginBottom-2 fontSize-5 fontColor-black">
+    			<strong className="fontFamily-bold">Issues: </strong>
+    			<span>
+                    { this.props.totalIssues.toLocaleString() }
+                    &nbsp;
+                    { this.props.olderDate &&
+                        <strong className={ this.determineStatusColor(this.props.totalIssuesDiff) }>
+                            ({ this.nullCheck(this.props.totalIssuesDiff) && this.props.totalIssuesDiff.toLocaleString() })
+                        </strong>
+                    }
+                </span>
+    		</p>
 		)
-		: (<div><strong>Issues: </strong><span>{ this.props.totalIssues.toLocaleString() }</span></div>)
+    }
 
     nullCheck = val => (val === null) ? '' : val
 
     // Adds a message based on closed or new issues
     renderMessage = () => {
-    	let total = this.props.blockerDiff + this.props.criticalDiff + this.props.majorDiff + this.props.minorDiff,
-    		message = "Great work, team!";
-    	if(total < -100){
-    		message = "Looks like there were major reductions in issues in the past few weeks. Great work, team!";
-    	} 
-    	if(total > 0){
-    		message = "Looks like there was an addition in issues in the past few weeks.";
+    	let {totalIssuesDiff} = this.props,
+    		message = "";
+
+    	if(totalIssuesDiff < -100){
+    		message = "Looks like there was a large reduction in issues. Great work, team!";
     	}
+    	if(totalIssuesDiff > 100){
+    		message = "There was a large addition in issues. Let's try to get this number down.";
+    	}
+
     	return (
-    		<div className="marginTop-2">
-    		{message}
-	    	</div>
-    	)
+            <p className="marginTop-2">
+                {message}
+            </p>
+        )
     }
 
 	// Renders each issue count and (if applicable) the differences between dates
@@ -111,14 +123,17 @@ class Summary extends React.Component {
 
 	render() {
 	    return (
-	    	<div className='width-fourth height-100vh bgColor-ui-dark fontFamily-book'>
+	    	<div className='width-fourth height-100vh bgColor-ui-dark fontFamily-book lineHeight-6'>
 				<img className="height-13 padding-5" src="../img/qubicle_logo.svg" role="presentation"/>
 				{this.props.totalIssues &&
-			    	<div id="summary" class="padding-5 bgColor-white-10 marginHorizontal-5" contentEditable suppressContentEditableWarning={true}>
-			    		Here are the updates from our code review for the following date(s):
-			    		<strong className="display-block marginTop-2">Date: </strong>
+			    	<div
+                        id="summary"
+                        className="padding-5 bgColor-white-10 marginHorizontal-5"
+                        contentEditable
+                        suppressContentEditableWarning={true}
+                    >
 			    		<span className="marginBottom-2 display-inlineBlock">
-						{ this.renderDate() }
+						    Here is the SonarQube status for <span className="fontFamily-bold">{ this.renderDate() }</span>
 						</span>
 						{ this.renderIssueCount() }
 						{ this.renderIssues() }
