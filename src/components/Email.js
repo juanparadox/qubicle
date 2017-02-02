@@ -54,7 +54,7 @@ class Email extends React.Component {
             issuesThisDay = data.v[0] + data.v[1] + data.v[2] + data.v[3],
             issuesYesterday = priorIndex.v[0] + priorIndex.v[1] + priorIndex.v[2] + priorIndex.v[3],
             issuesDifference = issuesThisDay - issuesYesterday;
-        console.log('issuesThisDay', issuesThisDay === null);
+        // console.log('issuesThisDay', issuesThisDay === null);
         return {
             [date]: {
                 elements: (
@@ -128,6 +128,7 @@ class Email extends React.Component {
             	critical: newerDate.critical,
             	major: newerDate.major,
             	minor: newerDate.minor,
+                totalIssuesDiff: newerDate.totalIssues - olderDate.totalIssues,
                 blockerDiff: newerDate.blocker - olderDate.blocker,
             	criticalDiff: newerDate.critical - olderDate.critical,
             	majorDiff: newerDate.major - olderDate.major,
@@ -180,6 +181,7 @@ class Email extends React.Component {
                     olderDate={ this.state.olderDate }
                     newerDate={ this.state.newerDate }
                     totalIssues={ this.state.totalIssues }
+                    totalIssuesDiff={ this.state.totalIssuesDiff }
                     blocker={ this.state.blocker }
                     blockerDiff={ this.state.blockerDiff }
                     critical={ this.state.critical }

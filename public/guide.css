@@ -2313,15 +2313,15 @@ pre code {
   flex-direction: row; }
 
 .fontFamily-light {
-  font-family: Gotham-Light; }
+  font-family: Gotham-Light; font-weight: 200}
 .fontFamily-book, html, input, textarea, option {
-  font-family: Gotham-Book; }
+  font-family: Gotham-Book; font-weight: 300;}
 .fontFamily-medium, h3 {
-  font-family: Gotham-Medium; }
+  font-family: Gotham-Medium; font-weight: 500;}
 .fontFamily-bold, a, button, label {
-  font-family: Gotham-Bold; }
+  font-family: Gotham-Bold; font-weight: 700;}
 .fontFamily-thin {
-  font-family: Gotham-Thin; }
+  font-family: Gotham-Thin; font-weight: 100;}
 
 .fontStyle-italic, h4 {
   font-style: italic; }
